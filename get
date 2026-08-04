@@ -1,14 +1,14 @@
 # MAS-zh_CN launcher
 # Usage:
-#   irm https://YOUR-PROJECT.pages.dev/get | iex
+#   irm https://mas-zh-cn.pages.dev/get | iex
 #
-# IMPORTANT: replace YOUR-PROJECT.pages.dev below with your real
+# IMPORTANT: change the domain below if your Pages project uses a different name
 # Cloudflare Pages domain (e.g. https://mas-zh-cn.pages.dev).
 # Keep this file ASCII-only so it works on both PowerShell 5.1 and 7.
 
 $ErrorActionPreference = 'Stop'
 
-$baseUrl = 'https://YOUR-PROJECT.pages.dev'
+$baseUrl = 'https://mas-zh-cn.pages.dev'
 $scriptUrl = "$baseUrl/MAS_AIO.cmd"
 $dest = Join-Path $env:TEMP 'MAS_AIO.cmd'
 
