@@ -1,0 +1,21 @@
+# MAS-zh_CN launcher
+# Usage:
+#   irm https://YOUR-PROJECT.pages.dev/get | iex
+#
+# IMPORTANT: replace YOUR-PROJECT.pages.dev below with your real
+# Cloudflare Pages domain (e.g. https://mas-zh-cn.pages.dev).
+# Keep this file ASCII-only so it works on both PowerShell 5.1 and 7.
+
+$ErrorActionPreference = 'Stop'
+
+$baseUrl = 'https://YOUR-PROJECT.pages.dev'
+$scriptUrl = "$baseUrl/MAS_AIO.cmd"
+$dest = Join-Path $env:TEMP 'MAS_AIO.cmd'
+
+Write-Host "Downloading MAS_AIO.cmd from $scriptUrl ..." -ForegroundColor Cyan
+Invoke-WebRequest -Uri $scriptUrl -OutFile $dest -UseBasicParsing
+
+# MAS_AIO.cmd auto-elevates to admin via UAC when needed.
+# It is allowed to run directly from the temp folder (path check passes).
+Write-Host "Launching MAS_AIO.cmd ..." -ForegroundColor Green
+cmd.exe /c "`"$dest`""
