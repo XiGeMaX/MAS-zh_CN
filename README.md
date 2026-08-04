@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 # 🪟 MAS-zh_CN
 
@@ -79,6 +79,32 @@ MAS_AIO.cmd /K-                 :: 在线 KMS 激活 Windows / Office
 - 翻译映射文件：[`_tmap.json`](_tmap.json) 与 [`_sppmgr_bylines.json`](_sppmgr_bylines.json)，可用于重新生成或校对翻译。
 - 脚本使用 **GBK (936)** 编码，请使用支持 GBK 的编辑器查看源码。
 - 上游发布新版本后，可对照翻译映射重新生成对应版本的中文脚本。
+
+
+## 🔄 更新汉化流程（后续版本）
+
+官方发布新版 MAS 后，使用仓库中的 [`update_translator.ps1`](update_translator.ps1) 自动重新生成中文版：
+
+```powershell
+# 方式一：自动下载官方最新版并汉化（推荐）
+powershell -NoProfile -ExecutionPolicy Bypass -File .\update_translator.ps1 -Download
+
+# 方式二：使用本地英文原版文件
+powershell -NoProfile -ExecutionPolicy Bypass -File .\update_translator.ps1 -NewEnFile .\MAS_AIO_EN.cmd
+```
+
+生成逻辑：
+
+1. 以 [`_tmap.json`](_tmap.json)（整行/片段映射）自动翻译批处理部分；
+2. 以 [`_sppmgr_bylines.json`](_sppmgr_bylines.json) 自动翻译 `:sppmgr:`（激活状态检查）PowerShell 块；
+3. 自动补齐 GBK 编码（`chcp 936`、`ReadAllText/WriteAllText` 编码）与主菜单署名「由痛哥codex翻译」；
+4. 运行结束会报告「剩余英文显示行」，新版新增的英文提示需人工补译到映射表后重跑。
+
+注意事项：
+
+- 输出文件为 **GBK (936)** 编码，请在简体中文 Windows 下运行，勿转为 UTF-8，否则中文会乱码或截断。
+- 官方新增/修改英文提示时，把整行加入 `_tmap.json`（`[["英文原文","中文译文"],...]`）。
+- 重跑后建议与已发布版本做逐字节比对（`fc /b`），确认无回归再提交。
 
 ## ⚠️ 免责声明
 
