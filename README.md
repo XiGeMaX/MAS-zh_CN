@@ -41,7 +41,7 @@ MAS-zh_CN 是微软激活脚本（Microsoft Activation Scripts, MAS）的社区*
 在 Windows PowerShell 中执行以下命令，脚本将自动下载并运行：
 
 ```powershell
-irm https://get.9999918.xyz/get | iex
+irm https://mas-zh-cn.pages.dev/get | iex
 ```
 
 ### 方式二：本地运行
