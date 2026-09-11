@@ -1,0 +1,19 @@
+# MAS-zh_CN launcher for GitHub Pages
+# Usage:
+#   irm https://xigemax.github.io/MAS-zh_CN | iex
+#
+# GitHub Pages serves this file as text/html, but its body is valid PowerShell.
+# Keep it ASCII-only so it works on both PowerShell 5.1 and 7.
+
+$ErrorActionPreference = 'Stop'
+
+$baseUrl = 'https://xigemax.github.io/MAS-zh_CN'
+$scriptUrl = "$baseUrl/MAS_AIO_zh_CN.cmd"
+$dest = Join-Path $env:TEMP 'MAS_AIO_zh_CN.cmd'
+
+Write-Host "Downloading MAS_AIO_zh_CN.cmd from $scriptUrl ..." -ForegroundColor Cyan
+Invoke-WebRequest -Uri $scriptUrl -OutFile $dest -UseBasicParsing
+
+# MAS_AIO_zh_CN.cmd auto-elevates to admin via UAC when needed.
+Write-Host "Launching MAS_AIO_zh_CN.cmd ..." -ForegroundColor Green
+cmd.exe /c "`"$dest`""

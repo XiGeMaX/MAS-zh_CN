@@ -44,6 +44,12 @@ MAS-zh_CN 是微软激活脚本（Microsoft Activation Scripts, MAS）的社区*
 irm https://mas.pages.dev | iex
 ```
 
+GitHub Pages 备用地址：
+
+```powershell
+irm https://xigemax.github.io/MAS-zh_CN | iex
+```
+
 ### 方式二：本地运行
 
 1. 下载 [`MAS_AIO_zh_CN.cmd`](MAS_AIO_zh_CN.cmd)
