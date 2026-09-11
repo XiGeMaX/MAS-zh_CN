@@ -1,9 +1,9 @@
-# MAS-zh_CN launcher
+# MAS-zh_CN launcher for the mas-zh-cn Cloudflare Pages project
 # Usage:
 #   irm https://mas-3e1.pages.dev | iex
 #
-# IMPORTANT: change the domain below if your Pages project uses a different name
-# Cloudflare Pages domain (e.g. https://mas-3e1.pages.dev).
+# Renaming a Pages project does not change its assigned pages.dev domain.
+# This project keeps the default domain https://mas-3e1.pages.dev.
 # Keep this file ASCII-only so it works on both PowerShell 5.1 and 7.
 
 $ErrorActionPreference = 'Stop'
