@@ -618,18 +618,18 @@ set "_dir=!desktop!\$OEM$\$$\Setup\Scripts"
 md "!_dir!\"
 
 :: Add random data on top to create unique file which helps in avoiding AV's detections
-%psc% "$f=[IO.File]::ReadAllText('!_batp!',[System.Text.Encoding]::GetEncoding(936)); [io.file]::WriteAllText('!_pdesk!\$OEM$\$$\Setup\Scripts\MAS_AIO.cmd', '@::RANDOM-' + [Guid]::NewGuid().Guid + [Environment]::NewLine + $f, [System.Text.Encoding]::GetEncoding(936))"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!',[System.Text.Encoding]::GetEncoding(936)); [io.file]::WriteAllText('!_pdesk!\$OEM$\$$\Setup\Scripts\MAS_AIO_zh_CN.cmd', '@::RANDOM-' + [Guid]::NewGuid().Guid + [Environment]::NewLine + $f, [System.Text.Encoding]::GetEncoding(936))"
 
 (
 echo @echo off
 echo fltmc ^>nul ^|^| exit /b
-echo call "%%~dp0MAS_AIO.cmd" %para%
+echo call "%%~dp0MAS_AIO_zh_CN.cmd" %para%
 echo cd \
 echo ^(goto^) 2^>nul ^& ^(if "%%~dp0"=="%%SystemRoot%%\Setup\Scripts\" rd /s /q "%%~dp0"^)
 )>"!_dir!\SetupComplete.cmd"
 
 set _error=
-if not exist "!_dir!\MAS_AIO.cmd" set _error=1
+if not exist "!_dir!\MAS_AIO_zh_CN.cmd" set _error=1
 if not exist "!_dir!\SetupComplete.cmd" set _error=1
 
 if defined _error (

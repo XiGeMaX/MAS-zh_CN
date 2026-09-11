@@ -1,18 +1,19 @@
 ﻿<#
 .SYNOPSIS
-  使用 _tmap.json / _sppmgr_bylines.json 将新版英文 MAS_AIO.cmd 汉化
+  使用 _tmap.json / _sppmgr_bylines.json 将新版英文 MAS_AIO.cmd 汉化为 MAS_AIO_zh_CN.cmd
 .DESCRIPTION
   1) 子串替换 _tmap.json 自动翻译 2) 对 :sppmgr: 块应用 _sppmgr_bylines.json
-  3) 自动补编码(GBK/chcp 936/GetEncoding) 4) 主菜单加署名 5) 报告剩余英文行
+  3) 自动补编码(GBK/chcp 936/GetEncoding) 4) 同步内部文件名并加主菜单署名
+  5) 固定输出 MAS_AIO_zh_CN.cmd 并原子替换 6) 报告剩余英文行
 .PARAMETER NewEnFile
   新版英文 MAS_AIO.cmd 的路径
 .PARAMETER OutFile
-  输出文件路径（默认: 输入同目录 MAS_AIO_<版本>_zh.cmd）
+  输出路径；文件名固定规范为 MAS_AIO_zh_CN.cmd（默认: 仓库根目录）
 .PARAMETER Download
   从官方仓库自动下载最新英文版（无需 -NewEnFile）
 .EXAMPLE
   .\update_translator.ps1 -NewEnFile C:\temp\MAS_AIO.cmd
-  .\update_translator.ps1 -Download -OutFile D:\out\MAS_AIO.cmd
+  .\update_translator.ps1 -Download -OutFile D:\out\MAS_AIO_zh_CN.cmd
 #>
 param(
   [string]$NewEnFile = '',
@@ -21,6 +22,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $dir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$TranslatedFileName = 'MAS_AIO_zh_CN.cmd'
 
 # ---- 1. 获取新版英文脚本 ----
 $tmp = ''
@@ -105,7 +107,17 @@ if ($start -ge 0 -and $end -gt $start) {
   }
 }
 
-# ---- 5. 编码处理 ----
+# ---- 5. 同步脚本内部文件名 ----
+$nameRefs = 0
+$sourceScriptName = 'MAS_AIO.cmd'
+for ($i = 0; $i -lt $lines.Count; $i++) {
+  if ($lines[$i].Contains($sourceScriptName)) {
+    $nameRefs += ([regex]::Matches($lines[$i], [regex]::Escape($sourceScriptName))).Count
+    $lines[$i] = $lines[$i].Replace($sourceScriptName, $TranslatedFileName)
+  }
+}
+
+# ---- 6. 编码处理 ----
 $chcpTop = 0; $chcpTask = 0; $readPatch = 0; $writePatch = 0
 for ($i = 0; $i -lt $lines.Count; $i++) {
   if ($lines[$i] -match '^@echo off') {
@@ -141,7 +153,7 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
   }
 }
 
-# ---- 6. 主菜单署名 ----
+# ---- 7. 主菜单署名 ----
 $attr = 'call :dk_color %Gray% "         由痛哥codex翻译"'
 if (-not ($lines -ccontains $attr)) {
   $promptEn = 'call :dk_color2 %_White% "         " %_Green% "Choose a menu option using your keyboard [1,2,3...E,H,0] :"'
@@ -151,29 +163,42 @@ if (-not ($lines -ccontains $attr)) {
   }
 }
 
-# ---- 7. 输出 ----
+# ---- 8. 输出 ----
 if (-not $OutFile) {
-  $ver = ''
-  foreach ($l in $lines) { if ($l -match '^@set masver=(.+)$') { $ver = $Matches[1].Trim(); break } }
-  if ($Download) { $OutFile = Join-Path $dir ('MAS_AIO_' + $ver + '_zh.cmd') }
-  else { $OutFile = Join-Path (Split-Path -Parent $NewEnFile) ('MAS_AIO_' + $ver + '_zh.cmd') }
+  $OutFile = Join-Path $dir $TranslatedFileName
+} else {
+  $outDir = Split-Path -Parent $OutFile
+  if (-not $outDir) { $outDir = $dir }
+  $OutFile = Join-Path $outDir $TranslatedFileName
+}
+$OutFile = [System.IO.Path]::GetFullPath($OutFile)
+$outDir = Split-Path -Parent $OutFile
+if (-not (Test-Path -LiteralPath $outDir)) {
+  New-Item -ItemType Directory -Path $outDir -Force | Out-Null
 }
 $gbk = [System.Text.Encoding]::GetEncoding(936)
 $outText = ($lines -join $crlf)
-[System.IO.File]::WriteAllText($OutFile, $outText, $gbk)
-if ($tmp) { Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue }
+$tmpOut = Join-Path $outDir ('.' + $TranslatedFileName + '.' + [guid]::NewGuid().ToString('N') + '.tmp')
+try {
+  [System.IO.File]::WriteAllText($tmpOut, $outText, $gbk)
+  Move-Item -LiteralPath $tmpOut -Destination $OutFile -Force
+} finally {
+  if ($tmpOut -and (Test-Path -LiteralPath $tmpOut)) { Remove-Item -LiteralPath $tmpOut -Force -ErrorAction SilentlyContinue }
+  if ($tmp -and (Test-Path -LiteralPath $tmp)) { Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue }
+}
 
-# ---- 8. 报告与自查 ----
+# ---- 9. 报告与自查 ----
 Write-Host ''
 Write-Host ('输出文件: ' + $OutFile) -ForegroundColor Green
-Write-Host ('整行翻译 ' + $tmapApplied + ' 条 | sppmgr 块 ' + $byApplied + ' 条 | chcp顶部 ' + $chcpTop + ' | chcp任务块 ' + $chcpTask + ' | ReadAllText补编码 ' + $readPatch + ' 处 | WriteAllText转936 ' + $writePatch + ' 处')
+Write-Host ('整行翻译 ' + $tmapApplied + ' 条 | sppmgr 块 ' + $byApplied + ' 条 | 文件名同步 ' + $nameRefs + ' 处 | chcp顶部 ' + $chcpTop + ' | chcp任务块 ' + $chcpTask + ' | ReadAllText补编码 ' + $readPatch + ' 处 | WriteAllText转936 ' + $writePatch + ' 处')
 $outRaw = [System.IO.File]::ReadAllBytes($OutFile)
 $lfOnly = 0
 for ($k = 0; $k -lt $outRaw.Length - 1; $k++) { if ($outRaw[$k] -eq 10 -and $outRaw[$k - 1] -ne 13) { $lfOnly++ } }
 $outText2 = $gbk.GetString($outRaw)
 $chcpCount = ([regex]::Matches($outText2, 'chcp 936 >nul')).Count
 $attrCount = ([regex]::Matches($outText2, [regex]::Escape($attr))).Count
-Write-Host ('自查: chcp936=' + $chcpCount + ' 署名=' + $attrCount + ' 孤立LF=' + $lfOnly)
+$outNameCount = ([regex]::Matches($outText2, [regex]::Escape($TranslatedFileName))).Count
+Write-Host ('自查: 文件名=' + (Split-Path -Leaf $OutFile) + ' | chcp936=' + $chcpCount + ' | 署名=' + $attrCount + ' | 内部文件名=' + $outNameCount + ' | 孤立LF=' + $lfOnly)
 $leftover = @()
 for ($i = 0; $i -lt $lines.Count; $i++) {
   $l = [string]$lines[$i]

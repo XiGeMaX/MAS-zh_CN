@@ -1,21 +1,22 @@
 # MAS-zh_CN launcher
 # Usage:
-#   irm https://mas-zh-cn.pages.dev/get | iex
+#   irm https://mas.pages.dev | iex
 #
 # IMPORTANT: change the domain below if your Pages project uses a different name
-# Cloudflare Pages domain (e.g. https://mas-zh-cn.pages.dev).
+# Cloudflare Pages domain (e.g. https://mas.pages.dev).
+# The Pages project rewrites "/" to this launcher through _redirects.
 # Keep this file ASCII-only so it works on both PowerShell 5.1 and 7.
 
 $ErrorActionPreference = 'Stop'
 
-$baseUrl = 'https://mas-zh-cn.pages.dev'
-$scriptUrl = "$baseUrl/MAS_AIO.cmd"
-$dest = Join-Path $env:TEMP 'MAS_AIO.cmd'
+$baseUrl = 'https://mas.pages.dev'
+$scriptUrl = "$baseUrl/MAS_AIO_zh_CN.cmd"
+$dest = Join-Path $env:TEMP 'MAS_AIO_zh_CN.cmd'
 
-Write-Host "Downloading MAS_AIO.cmd from $scriptUrl ..." -ForegroundColor Cyan
+Write-Host "Downloading MAS_AIO_zh_CN.cmd from $scriptUrl ..." -ForegroundColor Cyan
 Invoke-WebRequest -Uri $scriptUrl -OutFile $dest -UseBasicParsing
 
-# MAS_AIO.cmd auto-elevates to admin via UAC when needed.
+# MAS_AIO_zh_CN.cmd auto-elevates to admin via UAC when needed.
 # It is allowed to run directly from the temp folder (path check passes).
-Write-Host "Launching MAS_AIO.cmd ..." -ForegroundColor Green
+Write-Host "Launching MAS_AIO_zh_CN.cmd ..." -ForegroundColor Green
 cmd.exe /c "`"$dest`""

@@ -41,22 +41,22 @@ MAS-zh_CN 是微软激活脚本（Microsoft Activation Scripts, MAS）的社区*
 在 Windows PowerShell 中执行以下命令，脚本将自动下载并运行：
 
 ```powershell
-irm https://mas-zh-cn.pages.dev/get | iex
+irm https://mas.pages.dev | iex
 ```
 
 ### 方式二：本地运行
 
-1. 下载 [`MAS_AIO.cmd`](MAS_AIO.cmd)
+1. 下载 [`MAS_AIO_zh_CN.cmd`](MAS_AIO_zh_CN.cmd)
 2. 右键点击 → **以管理员身份运行**
 3. 根据菜单选择需要的激活方式
 
 ### 无人值守（命令行参数）
 
 ```bat
-MAS_AIO.cmd /HWID               :: HWID 激活 Windows
-MAS_AIO.cmd /Ohook              :: Ohook 激活 Office
-MAS_AIO.cmd /Z-                 :: TSforge 激活 Windows / Office / ESU
-MAS_AIO.cmd /K-                 :: 在线 KMS 激活 Windows / Office
+MAS_AIO_zh_CN.cmd /HWID         :: HWID 激活 Windows
+MAS_AIO_zh_CN.cmd /Ohook        :: Ohook 激活 Office
+MAS_AIO_zh_CN.cmd /Z-           :: TSforge 激活 Windows / Office / ESU
+MAS_AIO_zh_CN.cmd /K-           :: 在线 KMS 激活 Windows / Office
 ```
 
 ## 📋 主菜单
@@ -90,15 +90,17 @@ MAS_AIO.cmd /K-                 :: 在线 KMS 激活 Windows / Office
 powershell -NoProfile -ExecutionPolicy Bypass -File .\update_translator.ps1 -Download
 
 # 方式二：使用本地英文原版文件
-powershell -NoProfile -ExecutionPolicy Bypass -File .\update_translator.ps1 -NewEnFile .\MAS_AIO_EN.cmd
+powershell -NoProfile -ExecutionPolicy Bypass -File .\update_translator.ps1 -NewEnFile .\MAS_AIO_EN.cmd -OutFile .\MAS_AIO_zh_CN.cmd
 ```
 
 生成逻辑：
 
 1. 以 [`_tmap.json`](_tmap.json)（整行/片段映射）自动翻译批处理部分；
 2. 以 [`_sppmgr_bylines.json`](_sppmgr_bylines.json) 自动翻译 `:sppmgr:`（激活状态检查）PowerShell 块；
-3. 自动补齐 GBK 编码（`chcp 936`、`ReadAllText/WriteAllText` 编码）与主菜单署名「由痛哥codex翻译」；
-4. 运行结束会报告「剩余英文显示行」，新版新增的英文提示需人工补译到映射表后重跑。
+3. 自动同步脚本内部文件名，并补齐 GBK 编码（`chcp 936`、`ReadAllText/WriteAllText` 编码）；
+4. 自动加入主菜单署名「由痛哥codex翻译」；
+5. 固定输出为 `MAS_AIO_zh_CN.cmd`，并通过临时文件原子替换，避免生成半成品；
+6. 运行结束会报告「剩余英文显示行」，新版新增的英文提示需人工补译到映射表后重跑。
 
 注意事项：
 
