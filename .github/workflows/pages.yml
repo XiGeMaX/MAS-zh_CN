@@ -25,7 +25,8 @@ jobs:
       - name: Prepare site
         run: |
           mkdir -p _site
-          install -m 0644 index.html get MAS_AIO_zh_CN.cmd _site/
+          install -m 0644 gh-index.html _site/index.html
+          install -m 0644 get MAS_AIO_zh_CN.cmd _site/
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

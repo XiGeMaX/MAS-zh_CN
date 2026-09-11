@@ -1,13 +1,13 @@
-# MAS-zh_CN launcher for Cloudflare Pages
+# MAS-zh_CN launcher for GitHub Pages
 # Usage:
-#   irm https://mas-3e1.pages.dev | iex
+#   irm https://xigemax.github.io/MAS-zh_CN | iex
 #
-# Cloudflare Pages serves this file as text/html, but its body is valid PowerShell.
+# GitHub Pages serves this file as text/html, but its body is valid PowerShell.
 # Keep it ASCII-only so it works on both PowerShell 5.1 and 7.
 
 $ErrorActionPreference = 'Stop'
 
-$baseUrl = 'https://mas-3e1.pages.dev'
+$baseUrl = 'https://xigemax.github.io/MAS-zh_CN'
 $scriptUrl = "$baseUrl/MAS_AIO_zh_CN.cmd"
 $dest = Join-Path $env:TEMP 'MAS_AIO_zh_CN.cmd'
 
