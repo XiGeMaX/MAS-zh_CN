@@ -38,11 +38,11 @@ MAS-zh_CN 是微软激活脚本（Microsoft Activation Scripts, MAS）的社区*
 
 ### 方式一：在线运行（推荐）
 
-Cloudflare Pages 项目为 `mas-zh-cn`，默认域名为 `mas-3e1.pages.dev`。
+Cloudflare Pages 项目为 `mas-zh-cn`，默认域名为 `mas-zh-cn.pages.dev`。
 在 Windows PowerShell 中执行以下命令，脚本将自动下载并运行：
 
 ```powershell
-irm https://mas-3e1.pages.dev | iex
+irm https://mas-zh-cn.pages.dev | iex
 ```
 
 GitHub Pages 备用地址：
